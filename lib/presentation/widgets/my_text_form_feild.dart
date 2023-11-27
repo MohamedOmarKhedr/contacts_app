@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
 // ignore: must_be_immutable
-class MyTextFornFeild extends StatefulWidget {
+class MyTextFormField extends StatefulWidget {
   bool? obscureText;
   final String? hintText;
   final String? labelText;
@@ -13,7 +13,7 @@ class MyTextFornFeild extends StatefulWidget {
   Color? borderColor;
   Color? textColor;
 
-  MyTextFornFeild(
+  MyTextFormField(
       {Key? key,
       this.obscureText = false,
       required this.controller,
@@ -27,10 +27,10 @@ class MyTextFornFeild extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<MyTextFornFeild> createState() => _MyTextFornFeildState();
+  State<MyTextFormField> createState() => _MyTextFornFeildState();
 }
 
-class _MyTextFornFeildState extends State<MyTextFornFeild> {
+class _MyTextFornFeildState extends State<MyTextFormField> {
   late final bool _isHiding;
   @override
   void initState() {

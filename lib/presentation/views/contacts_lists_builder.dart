@@ -22,6 +22,9 @@ class ContactsListsBuilder extends StatelessWidget {
         visible: contacts.isNotEmpty,
         replacement: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
                 Icons.no_accounts,
@@ -31,7 +34,7 @@ class ContactsListsBuilder extends StatelessWidget {
               MyText(
                 text: noContacts,
                 textColor: white,
-                textSize: 30.sp,
+                textSize: 20.sp,
               ),
             ],
           ),

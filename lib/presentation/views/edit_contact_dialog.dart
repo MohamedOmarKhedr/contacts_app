@@ -46,7 +46,7 @@ class _EditContactDialogState extends State<EditContactDialog> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                MyTextFornFeild(
+                MyTextFormField(
                   controller: _nameController,
                   labelText: 'Contact Name',
                   textInputType: TextInputType.text,
@@ -60,7 +60,7 @@ class _EditContactDialogState extends State<EditContactDialog> {
                   borderColor: lightBlue,
                   textColor: lightBlue,
                 ),
-                MyTextFornFeild(
+                MyTextFormField(
                   controller: _phoneController,
                   labelText: 'Contact Number',
                   hintText: 'eg. 123456789',

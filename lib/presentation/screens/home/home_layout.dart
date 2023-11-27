@@ -80,29 +80,23 @@ class _HomeLayoutState extends State<HomeLayout> {
                   },
                 )
               ]),
-              bottomNavigationBar: BottomAppBar(
-                color: darkSkyBlue,
-                elevation: 0,
-                shape: const CircularNotchedRectangle(),
-                notchMargin: 12,
-                child: BottomNavigationBar(
-                    type: BottomNavigationBarType.fixed,
-                    backgroundColor: Colors.transparent,
-                    selectedItemColor: lightSkyBlue,
-                    unselectedItemColor: lightBlue,
-                    elevation: 0,
-                    currentIndex: _cubit.currentIndex,
-                    onTap: (index) => _cubit.changeScreensIndex(index),
-                    items: [
-                      BottomNavigationBarItem(
-                          icon: const Icon(
-                            Icons.contacts_outlined,
-                          ),
-                          label: _cubit.titles[0]),
-                      BottomNavigationBarItem(
-                          icon: Icon(Icons.favorite), label: _cubit.titles[1]),
-                    ]),
-              ),
+              bottomNavigationBar: BottomNavigationBar(
+                  type: BottomNavigationBarType.fixed,
+                  backgroundColor: darkSkyBlue,
+                  selectedItemColor: lightSkyBlue,
+                  unselectedItemColor: lightBlue,
+                  elevation: 0,
+                  currentIndex: _cubit.currentIndex,
+                  onTap: (index) => _cubit.changeScreensIndex(index),
+                  items: [
+                    BottomNavigationBarItem(
+                        icon: const Icon(
+                          Icons.contacts_outlined,
+                        ),
+                        label: _cubit.titles[0]),
+                    BottomNavigationBarItem(
+                        icon: const Icon(Icons.favorite), label: _cubit.titles[1]),
+                  ]),
               floatingActionButtonLocation:
                   FloatingActionButtonLocation.centerDocked,
               floatingActionButton: FloatingActionButton(
@@ -138,7 +132,7 @@ class _HomeLayoutState extends State<HomeLayout> {
                                             CrossAxisAlignment.center,
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          MyTextFornFeild(
+                                          MyTextFormField(
                                             controller: _nameController,
                                             labelText: 'Contact Name',
                                             textInputType: TextInputType.text,
@@ -152,7 +146,7 @@ class _HomeLayoutState extends State<HomeLayout> {
                                             borderColor: lightBlue,
                                             textColor: lightBlue,
                                           ),
-                                          MyTextFornFeild(
+                                          MyTextFormField(
                                             controller: _phoneController,
                                             labelText: 'Contact Number',
                                             hintText: 'eg. 123456789',
