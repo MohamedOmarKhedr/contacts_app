@@ -13,9 +13,9 @@ import '../widgets/my_text_form_feild.dart';
 class EditContactDialog extends StatefulWidget {
   final Map contactModel;
   const EditContactDialog({
-    Key? key,
+    super.key,
     required this.contactModel,
-  }) : super(key: key);
+  });
 
   @override
   State<EditContactDialog> createState() => _EditContactDialogState();
@@ -46,7 +46,7 @@ class _EditContactDialogState extends State<EditContactDialog> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                MyTextFormField(
+                MyTextFornFeild(
                   controller: _nameController,
                   labelText: 'Contact Name',
                   textInputType: TextInputType.text,
@@ -60,7 +60,7 @@ class _EditContactDialogState extends State<EditContactDialog> {
                   borderColor: lightBlue,
                   textColor: lightBlue,
                 ),
-                MyTextFormField(
+                MyTextFornFeild(
                   controller: _phoneController,
                   labelText: 'Contact Number',
                   hintText: 'eg. 123456789',

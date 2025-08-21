@@ -12,9 +12,9 @@ class MyButton extends StatelessWidget {
   final double width;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  const MyButton({Key? key,required this.onPressed,this.elevation,this.backgroundColor=Colors.deepOrange,
+  const MyButton({super.key,required this.onPressed,this.elevation,this.backgroundColor=Colors.deepOrange,
     this.splashColor,this.internalPadding,this.borderRadius=10,this.child
-  ,this.width=double.infinity,this.height=50,this.margin,this.padding}) : super(key: key);
+  ,this.width=double.infinity,this.height=50,this.margin,this.padding});
 
   @override
   Widget build(BuildContext context) {

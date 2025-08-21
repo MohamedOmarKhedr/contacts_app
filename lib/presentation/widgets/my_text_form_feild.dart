@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
 // ignore: must_be_immutable
-class MyTextFormField extends StatefulWidget {
+class MyTextFornFeild extends StatefulWidget {
   bool? obscureText;
   final String? hintText;
   final String? labelText;
@@ -13,8 +13,8 @@ class MyTextFormField extends StatefulWidget {
   Color? borderColor;
   Color? textColor;
 
-  MyTextFormField(
-      {Key? key,
+  MyTextFornFeild(
+      {super.key,
       this.obscureText = false,
       required this.controller,
       this.labelText = '',
@@ -23,20 +23,19 @@ class MyTextFormField extends StatefulWidget {
       required this.prefixIcon,
       required this.validate,
       this.borderColor = Colors.black,
-      this.textColor = Colors.black})
-      : super(key: key);
+      this.textColor = Colors.black});
 
   @override
-  State<MyTextFormField> createState() => _MyTextFornFeildState();
+  State<MyTextFornFeild> createState() => _MyTextFornFeildState();
 }
 
-class _MyTextFornFeildState extends State<MyTextFormField> {
+class _MyTextFornFeildState extends State<MyTextFornFeild> {
   late final bool _isHiding;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    this._isHiding = widget.obscureText!;
+    _isHiding = widget.obscureText!;
   }
 
   @override
@@ -52,7 +51,7 @@ class _MyTextFornFeildState extends State<MyTextFormField> {
           contentPadding: EdgeInsets.symmetric(vertical: 10),
           focusColor: widget.textColor,
           prefixIcon: widget.prefixIcon,
-          suffixIcon: this._isHiding == true
+          suffixIcon: _isHiding == true
               ? IconButton(
                   icon: widget.obscureText == false
                       ? Icon(Icons.remove_red_eye)

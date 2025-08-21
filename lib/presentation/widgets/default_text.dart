@@ -12,7 +12,7 @@ class DefaultText extends StatelessWidget {
   final TextStyle? style;
 
   const DefaultText({
-    Key? key,
+    super.key,
     required this.text,
     this.overflow,
     this.textAlign,
@@ -22,7 +22,7 @@ class DefaultText extends StatelessWidget {
     this.textStyle,
     this.weight,
     this.style,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

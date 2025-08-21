@@ -14,7 +14,7 @@ class ContactsListsItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: UniqueKey(),
+      key: Key(contactModel['id'].toString()),
       onDismissed: (direction) async {
         await AppCubit.get(context).deleteContact(id: contactModel['id']);
         Fluttertoast.showToast(
@@ -71,7 +71,6 @@ class ContactsListsItem extends StatelessWidget {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
                     padding: EdgeInsetsDirectional.only(start: 2.w),

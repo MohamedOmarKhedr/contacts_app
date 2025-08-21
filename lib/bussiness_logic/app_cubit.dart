@@ -1,10 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_contacts/presentation/screens/contacts_screen/contacts_screen.dart';
 import 'package:easy_contacts/presentation/screens/favorites_screen/favorites_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:sqflite/sqflite.dart';
 
 part 'app_state.dart';
 
@@ -16,8 +15,6 @@ class AppCubit extends Cubit<AppState> {
   IconData floatingActionButtonIcon = Icons.person_add;
 
   int currentIndex = 0;
-
-  FirebaseFirestore fireStore = FirebaseFirestore.instance;
 
   List<Widget> screens = [const ContactsScreen(), const FavoritesScreen()];
   List<String> titles = ['Contacts', 'Favorites'];
@@ -38,111 +35,106 @@ class AppCubit extends Cubit<AppState> {
   List<Map> contacts = [];
   List<Map> favorites = [];
 
-
+  late Database database;
 
   void createDatabase() {
-    getContacts();
-    getFavorites();
-  }
+    openDatabase(
+      "contacts.db",
+      version: 1,
+      onCreate: (db, version) {
+        if (kDebugMode) {
+          print("Database created");
+        }
 
-
-
-  void getContacts() async {
-    emit(AppGetContactsLoadingDatabaseState());
-
-    await fireStore.collection('contacts').get().then((value) {
-      contacts.clear();
-      for (var element in value.docs) {
-        contacts.add(element.data());
-      }
-      emit(AppGetContactsDoneDatabaseState());
-    }).catchError((e) {
-      if (kDebugMode) {
-        print(e);
-        emit(AppGetContactsErrorDatabaseState());
-      }
+        db
+            .execute(
+                'CREATE TABLE contacts (id INTEGER PRIMARY KEY, name TEXT, phoneNumber TEXT, type TEXT)')
+            .then((value) {
+          if (kDebugMode) {
+            print("Table created");
+          }
+        }).catchError((error) {
+          if (kDebugMode) {
+            print("error while Table created: $error");
+          }
+        });
+      },
+      onOpen: (db) {
+        // TODO: get contacts
+        getContacts(db);
+        if (kDebugMode) {
+          print("Database opened");
+        }
+      },
+    ).then((value) {
+      database = value;
+      emit(AppOpenDataBaseState());
     });
   }
 
-  void getFavorites() async {
-    emit(AppGetFavoritesLoadingDatabaseState());
+  void getContacts(Database database) async {
+    emit(AppLoadingDatabaseState());
 
-    await fireStore
-        .collection('contacts')
-        .where("type", isEqualTo: "favorite")
-        .get()
-        .then((value) {
-      favorites.clear();
-      for (var element in value.docs) {
-        favorites.add(element.data());
-      }
-      emit(AppGetFavoritesDoneDatabaseState());
-    }).catchError((e) {
-      if (kDebugMode) {
-        print(e);
-        emit(AppGetFavoritesErrorDatabaseState());
+    contacts.clear();
+    favorites.clear();
+
+    await database.rawQuery("SELECT * FROM contacts").then((value) {
+      for (Map<String, Object?> element in value) {
+        contacts.add(element);
+
+        if (element['type'] == 'favorite') {
+          favorites.add(element);
+        }
       }
     });
+
+    emit(AppDoneDatabaseState());
   }
-
-
 
   Future<void> insertContact(
       {required String name, required String phoneNumber}) async {
-    int uniqueId = DateTime.now().microsecondsSinceEpoch;
-    await fireStore.collection('contacts').doc(uniqueId.toString()).set({
-      'id': uniqueId,
-      'name': name,
-      'phoneNumber': phoneNumber,
-      'type': "all"
+    await database.transaction((txn) {
+      return txn.rawInsert(
+          'INSERT INTO contacts(name, phoneNumber, type) VALUES ("$name","$phoneNumber","all")');
     }).then((value) {
-      emit(AppInsertContactDoneState());
-      getContacts();
-      getFavorites();
+      if (kDebugMode) {
+        print("Contact $value successfully insert!");
+        emit(AppInsertContactDoneState());
+        getContacts(database);
+      }
+    }).catchError((error) {
+      if (kDebugMode) {
+        print("error while contact inserted: $error");
+      }
     });
   }
-
-
 
   Future<void> addOrRemoveFavorite(
       {required String type, required int id}) async {
-    await fireStore
-        .collection('contacts')
-        .doc(id.toString())
-        .update({'type': type}).then((value) {
+    await database.rawUpdate(
+        'UPDATE contacts SET type = ? WHERE id = ?', [type, id]).then((value) {
+      getContacts(database);
       emit(AppaddOrRemoveFavoriteDoneState());
-      getContacts();
-      getFavorites();
     });
   }
-
-
 
   Future<void> editContact(
       {required String name,
       required String phoneNumber,
       required int id}) async {
-    await fireStore
-        .collection('contacts')
-        .doc(id.toString())
-        .update({'name': name, 'phoneNumber': phoneNumber}).then((value) {
+    await database.rawUpdate(
+        'UPDATE contacts SET name = ?, phoneNumber = ?WHERE id = ?',
+        [name, phoneNumber, id]).then((value) {
+      getContacts(database);
       emit(AppEditContactDoneState());
-      getContacts();
-      getFavorites();
     });
   }
 
-
-
   Future<void> deleteContact({required int id}) async {
-    await fireStore
-        .collection('contacts')
-        .doc(id.toString())
-        .delete()
-        .then((value) {
+    await database
+        .rawDelete('DELETE FROM contacts WHERE id = ?', [id]).then((value) {
+      getContacts(database);
       emit(AppDeleteContactDoneState());
-      getContacts();
-      getFavorites();
     });
   }
 }

@@ -14,7 +14,7 @@ class DefaultMaterialButton extends StatelessWidget {
   final Widget? child;
 
   const DefaultMaterialButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     this.elevation,
     this.backgroundColor = Colors.deepOrange,
@@ -26,7 +26,7 @@ class DefaultMaterialButton extends StatelessWidget {
     this.width = double.infinity,
     this.padding,
     this.margin,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

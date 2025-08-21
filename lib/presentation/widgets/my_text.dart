@@ -13,7 +13,7 @@ class MyText extends StatelessWidget {
   FontWeight? weight;
   TextStyle? style;
   MyText(
-      {Key? key,
+      {super.key,
       required this.text,
       this.textAlign,
       this.textOverflow,
@@ -22,8 +22,7 @@ class MyText extends StatelessWidget {
       this.textSize,
       this.textStyle,
       this.weight,
-      this.style})
-      : super(key: key);
+      this.style});
 
   @override
   Widget build(BuildContext context) {

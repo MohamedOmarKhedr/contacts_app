@@ -4,12 +4,9 @@ import 'package:easy_contacts/presentation/routers/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
-import 'package:firebase_core/firebase_core.dart';
 
-void main() async {
+void main() {
   Bloc.observer = MyBlocObserver();
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -31,8 +28,7 @@ class _MyAppState extends State<MyApp> {
       child: Sizer(
         builder: (context, orientation, deviceType) {
           return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Easy Contacts',
+            title: 'Easy Contacts Local',
             theme: ThemeData(
               primarySwatch: Colors.blue,
             ),

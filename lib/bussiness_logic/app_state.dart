@@ -10,17 +10,9 @@ class ChangeBottomSheetState extends AppState {}
 
 class AppOpenDataBaseState extends AppState {}
 
-class AppGetContactsLoadingDatabaseState extends AppState {}
+class AppLoadingDatabaseState extends AppState {}
 
-class AppGetContactsDoneDatabaseState extends AppState {}
-
-class AppGetContactsErrorDatabaseState extends AppState {}
-
-class AppGetFavoritesLoadingDatabaseState extends AppState {}
-
-class AppGetFavoritesDoneDatabaseState extends AppState {}
-
-class AppGetFavoritesErrorDatabaseState extends AppState {}
+class AppDoneDatabaseState extends AppState {}
 
 class AppInsertContactDoneState extends AppState {}
 

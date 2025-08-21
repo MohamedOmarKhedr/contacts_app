@@ -5,8 +5,8 @@ import '../styles/colors.dart';
 
 class DefaultDivider extends StatelessWidget {
   const DefaultDivider({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

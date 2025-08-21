@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
 
 class HomeLayout extends StatefulWidget {
-  const HomeLayout({Key? key}) : super(key: key);
+  const HomeLayout({super.key});
 
   @override
   State<HomeLayout> createState() => _HomeLayoutState();
@@ -39,150 +39,153 @@ class _HomeLayoutState extends State<HomeLayout> {
       builder: (context, state) {
         return BlocBuilder<AppCubit, AppState>(
           builder: (context, state) {
-            return Scaffold(
-              key: _scaffoldKey,
-              extendBody: true,
-              appBar: AppBar(
-                backgroundColor: darkSkyBlue,
-                centerTitle: true,
-                elevation: 8.0,
-                title: DefaultText(
-                    text: _cubit.titles[_cubit.currentIndex],
-                    textColor: Colors.lightBlue,
-                    weight: FontWeight.bold,
-                    textSize: 20.sp),
-              ),
-              body: Stack(children: [
-                Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: AlignmentDirectional.topStart,
-                        end: AlignmentDirectional.bottomEnd,
-                        colors: [skyBlue, lightSkyBlue, skyBlue]),
-                  ),
+            return SafeArea(
+              child: Scaffold(
+                key: _scaffoldKey,
+                extendBody: true,
+                appBar: AppBar(
+                  backgroundColor: darkSkyBlue,
+                  centerTitle: true,
+                  elevation: 8.0,
+                  title: DefaultText(
+                      text: _cubit.titles[_cubit.currentIndex],
+                      textColor: Colors.lightBlue,
+                      weight: FontWeight.bold,
+                      textSize: 20.sp),
                 ),
-                BlocBuilder<AppCubit, AppState>(
-                  builder: (context, state) {
-                    if (state is AppGetContactsLoadingDatabaseState ||
-                        state is AppGetFavoritesLoadingDatabaseState) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.green[900],
-                        ),
-                      );
-                    }
-                    if (state is AppGetContactsErrorDatabaseState ||
-                        state is AppGetFavoritesErrorDatabaseState) {
-                      return Icon(Icons.error, size: 50.sp);
+                body: Stack(children: [
+                  Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: AlignmentDirectional.topStart,
+                          end: AlignmentDirectional.bottomEnd,
+                          colors: [skyBlue, lightSkyBlue, skyBlue]),
+                    ),
+                  ),
+                  BlocBuilder<AppCubit, AppState>(
+                    builder: (context, state) {
+                      if (state is AppLoadingDatabaseState) {
+                        return Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.green[900],
+                          ),
+                        );
+                      } else {
+                        return _cubit.screens[_cubit.currentIndex];
+                      }
+                    },
+                  )
+                ]),
+                bottomNavigationBar: BottomAppBar(
+                  color: darkSkyBlue,
+                  elevation: 0,
+                  shape: const CircularNotchedRectangle(),
+                  notchMargin: 12,
+                  child: BottomNavigationBar(
+                      type: BottomNavigationBarType.fixed,
+                      backgroundColor: Colors.transparent,
+                      selectedItemColor: lightSkyBlue,
+                      unselectedItemColor: lightBlue,
+                      elevation: 0,
+                      currentIndex: _cubit.currentIndex,
+                      onTap: (index) => _cubit.changeScreensIndex(index),
+                      items: [
+                        BottomNavigationBarItem(
+                            icon: const Icon(
+                              Icons.contacts_outlined,
+                            ),
+                            label: _cubit.titles[0]),
+                        BottomNavigationBarItem(
+                            icon: Icon(Icons.favorite,), label: _cubit.titles[1]),
+                      ]),
+                ),
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerDocked,
+                floatingActionButton: FloatingActionButton(
+                  onPressed: () async {
+                    if (_cubit.isBottomSheet) {
+                      if (_formKey.currentState!.validate()) {
+                        await _cubit.insertContact(
+                            name: _nameController.text,
+                            phoneNumber:
+                                "${countryCode.dialCode} ${_phoneController.text}");
+                        _nameController.text = '';
+                        _phoneController.text = '';
+                      }
                     } else {
-                      return _cubit.screens[_cubit.currentIndex];
+                      _cubit.changeBottomSheet(
+                          isBottomSheet: true,
+                          floatingActionButtonIcon: Icons.add_box_outlined);
+
+                      _scaffoldKey.currentState!
+                          .showBottomSheet((context) => Wrap(
+                                children: [
+                                  Container(
+                                    color: darkSkyBlue,
+                                    padding: EdgeInsets.only(
+                                        left: 3.w,
+                                        right: 3.w,
+                                        bottom: 2.h,
+                                        top: 4.h),
+                                    child: Form(
+                                      key: _formKey,
+                                      child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            MyTextFornFeild(
+                                              controller: _nameController,
+                                              labelText: 'Contact Name',
+                                              textInputType: TextInputType.text,
+                                              prefixIcon: const Icon(Icons.title),
+                                              validate: (value) {
+                                                if (value!.isEmpty) {
+                                                  return "can't empty";
+                                                }
+                                                return null;
+                                              },
+                                              borderColor: lightBlue,
+                                              textColor: lightBlue,
+                                            ),
+                                            MyTextFornFeild(
+                                              controller: _phoneController,
+                                              labelText: 'Contact Number',
+                                              hintText: 'eg. 123456789',
+                                              textInputType: TextInputType.text,
+                                              prefixIcon: CountryCodePicker(
+                                                onChanged: (countryCode) {
+                                                  this.countryCode = countryCode;
+                                                },
+                                                initialSelection: 'EG',
+                                                favorite: const ['+20', 'EG'],
+                                              ),
+                                              validate: (value) {
+                                                if (value!.isEmpty) {
+                                                  return "can't empty";
+                                                }
+                                                return null;
+                                              },
+                                              borderColor: lightBlue,
+                                              textColor: lightBlue,
+                                            ),
+                                          ]),
+                                    ),
+                                  ),
+                                ],
+                              ))
+                          .closed
+                          .then((value) => _cubit.changeBottomSheet(
+                              isBottomSheet: false,
+                              floatingActionButtonIcon: Icons.person_add));
                     }
                   },
-                )
-              ]),
-              bottomNavigationBar: BottomNavigationBar(
-                  type: BottomNavigationBarType.fixed,
                   backgroundColor: darkSkyBlue,
-                  selectedItemColor: lightSkyBlue,
-                  unselectedItemColor: lightBlue,
-                  elevation: 0,
-                  currentIndex: _cubit.currentIndex,
-                  onTap: (index) => _cubit.changeScreensIndex(index),
-                  items: [
-                    BottomNavigationBarItem(
-                        icon: const Icon(
-                          Icons.contacts_outlined,
-                        ),
-                        label: _cubit.titles[0]),
-                    BottomNavigationBarItem(
-                        icon: const Icon(Icons.favorite), label: _cubit.titles[1]),
-                  ]),
-              floatingActionButtonLocation:
-                  FloatingActionButtonLocation.centerDocked,
-              floatingActionButton: FloatingActionButton(
-                onPressed: () async {
-                  if (_cubit.isBottomSheet) {
-                    if (_formKey.currentState!.validate()) {
-                      await _cubit.insertContact(
-                          name: _nameController.text,
-                          phoneNumber:
-                              "${countryCode.dialCode} ${_phoneController.text}");
-                      _nameController.text = '';
-                      _phoneController.text = '';
-                    }
-                  } else {
-                    _cubit.changeBottomSheet(
-                        isBottomSheet: true,
-                        floatingActionButtonIcon: Icons.add_box_outlined);
-
-                    _scaffoldKey.currentState!
-                        .showBottomSheet((context) => Wrap(
-                              children: [
-                                Container(
-                                  color: darkSkyBlue,
-                                  padding: EdgeInsets.only(
-                                      left: 3.w,
-                                      right: 3.w,
-                                      bottom: 2.h,
-                                      top: 4.h),
-                                  child: Form(
-                                    key: _formKey,
-                                    child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          MyTextFormField(
-                                            controller: _nameController,
-                                            labelText: 'Contact Name',
-                                            textInputType: TextInputType.text,
-                                            prefixIcon: const Icon(Icons.title),
-                                            validate: (value) {
-                                              if (value!.isEmpty) {
-                                                return "can't empty";
-                                              }
-                                              return null;
-                                            },
-                                            borderColor: lightBlue,
-                                            textColor: lightBlue,
-                                          ),
-                                          MyTextFormField(
-                                            controller: _phoneController,
-                                            labelText: 'Contact Number',
-                                            hintText: 'eg. 123456789',
-                                            textInputType: TextInputType.text,
-                                            prefixIcon: CountryCodePicker(
-                                              onChanged: (countryCode) {
-                                                this.countryCode = countryCode;
-                                              },
-                                              initialSelection: 'EG',
-                                              favorite: const ['+20', 'EG'],
-                                            ),
-                                            validate: (value) {
-                                              if (value!.isEmpty) {
-                                                return "can't empty";
-                                              }
-                                              return null;
-                                            },
-                                            borderColor: lightBlue,
-                                            textColor: lightBlue,
-                                          ),
-                                        ]),
-                                  ),
-                                ),
-                              ],
-                            ))
-                        .closed
-                        .then((value) => _cubit.changeBottomSheet(
-                            isBottomSheet: false,
-                            floatingActionButtonIcon: Icons.person_add));
-                  }
-                },
-                backgroundColor: darkSkyBlue,
-                elevation: 20,
-                child: Icon(
-                  _cubit.floatingActionButtonIcon,
-                  color: lightBlue,
+                  elevation: 20,
+                  child: Icon(
+                    _cubit.floatingActionButtonIcon,
+                    color: lightBlue,
+                  ),
                 ),
               ),
             );
