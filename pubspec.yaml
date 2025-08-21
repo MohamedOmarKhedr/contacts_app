@@ -34,14 +34,12 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_bloc: ^8.1.2
   bloc: ^8.1.1
+  sqflite: ^2.2.8+3
   sizer: ^2.0.15
   country_code_picker: ^3.0.0
   fluttertoast: ^8.2.2
   url_launcher: ^6.1.10
   flutter_launcher_icons: ^0.13.1
-  firebase_core: ^2.23.0
-  cloud_firestore: ^4.13.2
-  
 
 flutter_launcher_icons:
   android: "launcher_icon"

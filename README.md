@@ -1,6 +1,6 @@
 # easy_contacts
 
-contacts app using cubit and sqflite
+A new Flutter project.
 
 ## Getting Started
 
